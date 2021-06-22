@@ -1,0 +1,12 @@
+label {
+    font-weight: bold;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: large;
+    display: flex;
+    justify-content: center;
+}
+
+.sort_button {
+    float: right;
+    margin: 2px;
+}
