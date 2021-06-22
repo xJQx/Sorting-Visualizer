@@ -3,7 +3,7 @@ label {
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     font-size: large;
     display: flex;
-    justify-content: center;
+    justify-content: left;
 }
 
 .sort_button {

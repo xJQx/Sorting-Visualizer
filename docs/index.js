@@ -6,13 +6,19 @@ const ctx = canvas.getContext('2d');
 
 // window resizing
 window.addEventListener('resize', () => {
+    if (!sorting) {
+        Resize();
+    }
+})
+
+function Resize() {
     canvas.height = window.innerHeight / 1.5;
     canvas.width = window.innerWidth / 1.05;
     arrayMembers = array.map((v, i) => {
         return new ArrayMember(i * (canvas.width / array_size - 1) + i, 0, canvas.width / array_size - 1 , v * 1, color=`${array_color}`);
     })
     drawAll();
-})
+}
 
 
 let array_size = 60;
@@ -29,7 +35,6 @@ const ACTIONS = {
     SWAP: "SWAP",
     MERGE: "MERGE"
 }
-
 
 
 
@@ -149,6 +154,7 @@ function BubbleSort(array, onAction) {
         }
         setTimeout(() => {
             sorting = false;
+            Resize();
         }, ticks * speed);
         return array;
     }
@@ -197,6 +203,7 @@ function InsertionSort(array, onAction) {
         }
         setTimeout(() => {
             sorting = false;
+            Resize();
         }, ticks * speed);
         return array;
     }
@@ -265,6 +272,7 @@ async function MergeSort(array, onAction) {
         
         console.log(array);
         checkArray(array);
+        Resize();
     }
 }
 
@@ -326,16 +334,25 @@ async function QuickSort(array, s, end, onAction) {
         return [start, low];
     }
 
-    await Compartment(array, s, end);
-
-    // change all the bars to darkgreen ar the end
-    let array_len = array.length;
-    for (let i = 0; i < array_len; i++) {
-        onAction({type: ACTIONS.MERGE, data: [i, array[i]]});
+    if (sorting == true) {
+        return array;
     }
+    else {
+        sorting = true; 
+        new_array = false; 
+        await Compartment(array, s, end);
 
-    console.log(array);
-    checkArray(array);
+        // change all the bars to darkgreen ar the end
+        let array_len = array.length;
+        for (let i = 0; i < array_len; i++) {
+            onAction({type: ACTIONS.MERGE, data: [i, array[i]]});
+        }
+
+        sorting = false;
+        console.log(array);
+        checkArray(array);
+        Resize();
+    }
 }
 
 // test result of sort
@@ -460,20 +477,21 @@ function Buttons() {
     // quick sort button
     function QuickSortButton() {
         document.querySelector('#quicksort').onclick = () => {
-
-            QuickSort(array, 0 , array.length - 1, (action) => {
-                ActionsMap[action.type](action, arrayMembers);
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                drawAll();
-                
-                // if actions.merge change all bars to darkgreen
-                if (action.type != [ACTIONS.MERGE]) {
-                    arrayMembers.forEach((m) => {
-                        m.resetColor();
-                    })
-                }
-            });
-            array_color = 'green';
+            if (sorting == false && new_array == true) {
+                QuickSort(array, 0 , array.length - 1, (action) => {
+                    ActionsMap[action.type](action, arrayMembers);
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    drawAll();
+                    
+                    // if actions.merge change all bars to darkgreen
+                    if (action.type != [ACTIONS.MERGE]) {
+                        arrayMembers.forEach((m) => {
+                            m.resetColor();
+                        })
+                    }
+                });
+                array_color = 'green';
+            }
         }
     }
 
@@ -490,14 +508,10 @@ function Buttons() {
 Buttons();
 
 
-
-
-
-
 async function wait() {
     return new Promise(resolve => {
       setTimeout(() => {
         resolve('resolved');
       }, speed * 10);
     });
-  }
+}
