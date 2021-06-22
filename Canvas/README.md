@@ -1,5 +1,5 @@
 # Sorting Visualizer
-## URL: 
+## URL: https://xjqx.github.io/Sorting-Visualizer/
 ### Specification:
 - Types of Sorts
   - **Bubble Sort**
@@ -16,3 +16,5 @@
   - 2 Ways
     - setTimeout()
     - await
+  - Window
+    - Canvas and bar size dynamically change size when size of window is changed
