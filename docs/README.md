@@ -1,5 +1,5 @@
 # Sorting Visualizer
-## URL: 
+## URL: https://xjqx.github.io/Sorting-Visualizer/
 ### Specification:
 - Types of Sorts
   - **Bubble Sort**
