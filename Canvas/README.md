@@ -4,13 +4,14 @@
 - Types of Sorts
   - **Bubble Sort**
   - **Insertion Sort**
+  - **Selection Sort**
   - **Quick Sort**
   - **Merge Sort**
 - Buttons to change variables
   - Change Array Size
   - New Random Array
   - Change Sorting Speed
-    - Sorting speed can be changed dynamically while sorting for Quick and Merge Sort
+    - Sorting speed can be changed dynamically while sorting (Selection Sort, Quick Sort, Merge Sort)
 - Animation
   - HTML Canvas
   - 2 Ways

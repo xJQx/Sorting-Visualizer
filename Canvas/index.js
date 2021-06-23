@@ -33,7 +33,8 @@ const ACTIONS = {
     SORT: "SORT",
     COMPARE: "COMPARE",
     SWAP: "SWAP",
-    MERGE: "MERGE"
+    MERGE: "MERGE",
+    SELECT: "SELECT"
 }
 
 
@@ -42,7 +43,7 @@ const ACTIONS = {
 function RandomArray(array_size) {
     let array = [];
     for (let i = 0; i < array_size; i++) {
-        let num = Math.floor(Math.random() * 500 + 5);
+        let num = Math.floor(Math.random() * 400 + 5);
         array.push(num);
     }
     return array;
@@ -119,6 +120,9 @@ const ActionsMap = {
     [ACTIONS.MERGE]: (action, members) => {
         const [k, temp] = action.data;
         members[k].setValue(temp, 'DarkGreen');
+    },
+    [ACTIONS.SELECT]: (action, members) => {
+        members[action.data].setColor('blue');
     }
 }
 
@@ -355,6 +359,50 @@ async function QuickSort(array, s, end, onAction) {
     }
 }
 
+// selection sort
+async function SelectionSort(array, onAction) {
+    if (sorting == true) {
+        return array;
+    }
+    else {
+        sorting = true; 
+        new_array = false;
+
+        array_len = array.length;
+        // iterate through the unsorted list
+        for (let i = 0; i < array_len; i++) {
+            // a list consisting of index and number [index, number]
+            // compare number and save index of smaller number
+            let smallest = [0, 510];
+            for (let j = i; j < array_len; j++) {
+                await wait();
+                onAction({type: ACTIONS.SELECT, data: j});
+                if (array[j] < smallest[1]) {
+                    smallest[0] = j;
+                    smallest[1] = array[j];
+                }
+            }
+
+            // change smallest number position
+            // with the 1st element of unsorted list
+            await wait();
+            onAction({type: ACTIONS.SWAP, data: [i, smallest[0]]});
+            temp = array[i];
+            array[i] = smallest[1];
+            array[smallest[0]] = temp;
+
+            // change sorted portion of array to green
+            await wait();
+            onAction({type: ACTIONS.SORT, data: i});
+        }
+
+        sorting = false;
+        console.log(array);
+        checkArray(array);
+        Resize();
+    }
+}
+
 // test result of sort
 function checkArray(array) {
     array_len = array.length;
@@ -495,6 +543,23 @@ function Buttons() {
         }
     }
 
+    function SelectionSortButton() {
+        document.querySelector('#selectionsort').onclick = () => {
+            if (sorting == false && new_array == true) {
+                console.log('selection sort');
+                SelectionSort(array, (action) => {
+                    ActionsMap[action.type](action, arrayMembers);
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    drawAll();
+                    arrayMembers.forEach((m) => {
+                        m.resetColor();
+                    })
+                });
+                array_color = 'green';
+            }
+        }
+    }
+
 
     // call the functions
     SpeedButton();
@@ -504,6 +569,7 @@ function Buttons() {
     InsertionSortButton();
     MergeSortButton();
     QuickSortButton();
+    SelectionSortButton()
 }
 Buttons();
 
