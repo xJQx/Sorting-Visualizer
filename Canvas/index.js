@@ -134,6 +134,7 @@ function BubbleSort(array, onAction) {
         return array;
     }
     else {
+        DisableButtons();
         sorting = true; 
         new_array = false; 
         array_len = array.length;
@@ -159,6 +160,7 @@ function BubbleSort(array, onAction) {
         setTimeout(() => {
             sorting = false;
             Resize();
+            EnableButtons();
         }, ticks * speed);
         return array;
     }
@@ -170,6 +172,7 @@ function InsertionSort(array, onAction) {
         return array;
     }
     else {
+        DisableButtons();
         sorting = true; 
         new_array = false; 
         array_len = array.length;
@@ -208,6 +211,7 @@ function InsertionSort(array, onAction) {
         setTimeout(() => {
             sorting = false;
             Resize();
+            EnableButtons();
         }, ticks * speed);
         return array;
     }
@@ -219,6 +223,7 @@ async function MergeSort(array, onAction) {
         return array;
     }
     else {
+        DisableButtons();
         sorting = true; 
         new_array = false; 
         async function Merge(array, start, mid, end) {
@@ -277,6 +282,7 @@ async function MergeSort(array, onAction) {
         console.log(array);
         checkArray(array);
         Resize();
+        EnableButtons();
     }
 }
 
@@ -342,6 +348,7 @@ async function QuickSort(array, s, end, onAction) {
         return array;
     }
     else {
+        DisableButtons();
         sorting = true; 
         new_array = false; 
         await Compartment(array, s, end);
@@ -356,6 +363,7 @@ async function QuickSort(array, s, end, onAction) {
         console.log(array);
         checkArray(array);
         Resize();
+        EnableButtons();
     }
 }
 
@@ -365,6 +373,7 @@ async function SelectionSort(array, onAction) {
         return array;
     }
     else {
+        DisableButtons();
         sorting = true; 
         new_array = false;
 
@@ -400,6 +409,7 @@ async function SelectionSort(array, onAction) {
         console.log(array);
         checkArray(array);
         Resize();
+        EnableButtons();
     }
 }
 
@@ -572,6 +582,27 @@ function Buttons() {
     SelectionSortButton()
 }
 Buttons();
+
+function DisableButtons() {
+    document.querySelectorAll('button').forEach((button) => {
+        button.disabled = true;
+        button.style.opacity = 0.5;
+    })
+    document.querySelectorAll('#size').forEach((i) => {
+        i.disabled = true;
+        i.opacity = 0.5;
+    })
+}
+function EnableButtons() {
+    document.querySelectorAll('button').forEach((button) => {
+        button.disabled = false;
+        button.style.opacity = 1;
+    })
+    document.querySelectorAll('#size').forEach((i) => {
+        i.disabled = false;
+        i.opacity = 1;
+    })
+}
 
 
 async function wait() {
