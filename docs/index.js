@@ -293,6 +293,10 @@ async function QuickSort(array, s, end, onAction) {
     async function Compartment (array, s, end) {
         // base case
         if (s >= end) {
+            if (array[s]) {
+                onAction({type: ACTIONS.SORT, data: s});
+                await wait();
+            }
             return;
         }
 
@@ -338,6 +342,8 @@ async function QuickSort(array, s, end, onAction) {
         // move pivot to correct position
         onAction({type: ACTIONS.SWAP, data: [low, pivot_index]});
         await wait();
+        onAction({type: ACTIONS.SORT, data: low});
+        await wait();
         temp = array[low];
         array[low] = array[pivot_index];
         array[pivot_index] = temp;
@@ -352,12 +358,6 @@ async function QuickSort(array, s, end, onAction) {
         sorting = true; 
         new_array = false; 
         await Compartment(array, s, end);
-
-        // change all the bars to darkgreen ar the end
-        let array_len = array.length;
-        for (let i = 0; i < array_len; i++) {
-            onAction({type: ACTIONS.MERGE, data: [i, array[i]]});
-        }
 
         sorting = false;
         console.log(array);
