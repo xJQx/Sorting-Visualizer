@@ -426,6 +426,76 @@ function checkArray(array) {
     return true;
 }
 
+// heap sort
+async function HeapSort(array, onAction) {
+    if (sorting == true) {
+        return array;
+    }
+    else {
+        DisableButtons();
+        sorting = true; 
+        new_array = false;
+
+        let array_len = array.length;
+        // for each node with children
+        for (let i = array_len; i > 0; i--) {
+            for (let j = Math.floor((array_len - 1) / 2); j >= 0; j--) {
+                onAction({type: ACTIONS.SELECT, data: j});
+                await wait();
+                await MaxHeap(array, j, i);
+            }
+
+            // move the greatest number (root) to the end of the unsorted array
+            let temp = array[0];
+            array[0] = array[i - 1];
+            array[i - 1] = temp;
+            onAction({type: ACTIONS.SWAP, data: [i - 1, 0]});
+            await wait();
+
+            // change sorted portion of array to green
+            onAction({type: ACTIONS.SORT, data: i - 1});
+            await wait();
+        }
+        
+        sorting = false;
+        console.log(array);
+        checkArray(array);
+        Resize();
+        EnableButtons();
+    }
+    
+    async function MaxHeap(array, parent_index, unsorted_len) {
+        // compare parent with children
+        // make sure parent is greater than children
+        let child_left = 2 * parent_index + 1;
+        let child_right = 2 * parent_index + 2;
+    
+        // check if child exist
+        // if exist compare with parent
+        let largest_index = parent_index;
+        let largest = array[parent_index];
+        if (child_left < unsorted_len && largest < array[child_left]) {
+            largest_index = child_left;
+            largest = array[child_left];
+        }
+        if (child_right < unsorted_len && largest < array[child_right]) {
+            largest_index = child_right;
+            largest = array[child_left];
+        }
+    
+        if (largest_index != parent_index) {
+            let temp = array[parent_index];
+            array[parent_index] = array[largest_index];
+            array[largest_index] = temp;
+            
+            onAction({type: ACTIONS.SWAP, data: [parent_index, largest_index]});
+            await wait();
+    
+            // recursively look down the affected subtree
+            await MaxHeap(array, largest_index, unsorted_len);
+        }
+    }
+}
 
 // buttons on webpage
 function Buttons() {
@@ -570,6 +640,23 @@ function Buttons() {
         }
     }
 
+    function HeapSortButton() {
+        document.querySelector('#heapsort').onclick = () => {
+            if (sorting == false && new_array == true) {
+                console.log('heap sort');
+                HeapSort(array, (action) => {
+                    ActionsMap[action.type](action, arrayMembers);
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    drawAll();
+                    arrayMembers.forEach((m) => {
+                        m.resetColor();
+                    })
+                });
+                array_color = 'green';
+            }
+        }
+    }
+
 
     // call the functions
     SpeedButton();
@@ -579,7 +666,8 @@ function Buttons() {
     InsertionSortButton();
     MergeSortButton();
     QuickSortButton();
-    SelectionSortButton()
+    SelectionSortButton();
+    HeapSortButton();
 }
 Buttons();
 
