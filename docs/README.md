@@ -7,6 +7,7 @@
   - **Selection Sort**
   - **Quick Sort**
   - **Merge Sort**
+  - **Heap Sort**
 - Buttons to change variables
   - Change Array Size
   - New Random Array
